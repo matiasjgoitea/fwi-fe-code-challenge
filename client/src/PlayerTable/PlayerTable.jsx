@@ -5,7 +5,7 @@ import { connectAdvanced } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
 import { COUNTRIES } from '../constants';
-import { fetchPlayersSuccess } from '../appState/actions';
+import { fetchPlayers, removePlayer, openModal } from '../appState/actions';
 
 import './PlayerTable.scss';
 import TableHeader from './TableHeader';
@@ -22,30 +22,27 @@ class PlayerTable extends PureComponent {
         imageUrl: PropTypes.string.isRequired,
       })
     ).isRequired,
-    fetchPlayersSuccess: PropTypes.func.isRequired,
+    fetchPlayers: PropTypes.func.isRequired,
+    removePlayer: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.handleOnCreatePlayer = this.handleOnCreatePlayer.bind(this);
+  }
+
   componentDidMount() {
-    const { fetchPlayersSuccess } = this.props;
-    fetch('http://localhost:3001/players', {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-        if (data) {
-          fetchPlayersSuccess(data);
-          return data;
-        }
-        throw new Error(data.message);
-      });
+    this.props.fetchPlayers();
+  }
+
+  handleOnCreatePlayer(e) {
+    e.preventDefault();
+    this.props.openModal();
   }
 
   render() {
-    const { players } = this.props;
+    const { players, removePlayer, openModal } = this.props;
     return (
       <div
         id="player-table-grid"
@@ -53,8 +50,15 @@ class PlayerTable extends PureComponent {
         aria-label="Poker Players"
         className="player-table"
       >
+        <button className="player__button" onClick={this.handleOnCreatePlayer}>
+          Create Player +
+        </button>
         <TableHeader />
-        <TableBody players={players} />
+        <TableBody
+          players={players}
+          removePlayer={removePlayer}
+          openModal={openModal}
+        />
       </div>
     );
   }
@@ -62,7 +66,10 @@ class PlayerTable extends PureComponent {
 
 export default connectAdvanced(dispatch => {
   let result;
-  const actions = bindActionCreators({ fetchPlayersSuccess }, dispatch);
+  const actions = bindActionCreators(
+    { fetchPlayers, removePlayer, openModal },
+    dispatch
+  );
 
   return (state, props) => {
     const players = state.playerIds.map(id => state.players[id]);

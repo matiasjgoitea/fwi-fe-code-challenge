@@ -1,0 +1,59 @@
+@import 'variables';
+
+.form {
+  padding-top: 25px;
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  &__input {
+    border: 1px solid grey;
+    border-radius: 5px;
+    width: 14rem;
+    padding: 5px;
+    margin: 2px 5px;
+    outline: 0;
+
+    &:hover {
+      box-shadow: 0 1px 2px 0 rgba($vivid, 0.2);
+    }
+
+    &:focus {
+      box-shadow: 0 1px 3px 0 rgba($vivid, 0.5);
+    }
+  }
+
+  &__action-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__button {
+    border-radius: 28px;
+    border: 0;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    margin: 0 10px;
+
+    &-confirm {
+      background-color: $sunset;
+    }
+
+    &-cancel {
+      background-color: $palisade;
+    }
+  }
+
+  &__button:focus {
+    outline: 0;
+  }
+}
